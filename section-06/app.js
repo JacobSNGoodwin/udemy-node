@@ -5,6 +5,9 @@ const bodyParser = require('body-parser');
 
 const app = express();
 
+app.set('view engine', 'pug');
+app.set('views', 'views') // this is for demonstration only, as we are using default folder
+
 const adminData = require('./routes/admin');
 const shopRoutes = require('./routes/shop');
 
