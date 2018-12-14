@@ -18,28 +18,40 @@ const getProductsFromFile = cb => {
 };
 
 module.exports = class Product {
-  constructor(title, imageUrl, description, price) {
+  constructor(id, title, imageUrl, description, price) {
+    this.id = id;
     this.title = title;
     this.imageUrl = imageUrl;
     this.description = description;
     this.price = price;
   }
 
-  save() {
-    this.id = Math.random().toString();
+  save () {
     getProductsFromFile(products => {
-      products.push(this);
-      fs.writeFile(p, JSON.stringify(products), err => {
-        console.log(err);
-      });
+      if (this.id) {
+        // edit if id already exits
+        const existingProductIndex = products.findIndex(prod => prod.id === this.id);
+        const updatedProducts = [...products];
+        updatedProducts[existingProductIndex] = this;
+        fs.writeFile(p, JSON.stringify(updatedProducts), err => {
+          console.log(err);
+        });
+      } else {
+        // otherwise, asign a new id
+        this.id = Math.random().toString();
+        products.push(this);
+        fs.writeFile(p, JSON.stringify(products), err => {
+          console.log(err);
+        });
+      }
     });
   }
 
-  static fetchAll(cb) {
+  static fetchAll (cb) {
     getProductsFromFile(cb);
   }
 
-  static findById(id, cb) {
+  static findById (id, cb) {
     getProductsFromFile(products => {
       // find product in array for product with given id
       const product = products.find(p => p.id === id);
