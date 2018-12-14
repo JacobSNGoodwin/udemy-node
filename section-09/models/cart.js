@@ -9,11 +9,12 @@ const p = path.join(
 
 module.exports = class Cart {
   static addProduct(id, productPrice) {
+    console.log
     // fetch old or previous cart
     fs.readFile(p, (err, fileContent) => {
-      let cart = {products: [], totalPrice: 0}
+      let cart = { products: [], totalPrice: 0 };
       if (!err) {
-        // error only if cart fileContent doesn't exist
+        // error only if cart fileContent doesn't exist or is empty
         cart = JSON.parse(fileContent);
       }
       // Determine if card already has existing product
@@ -47,14 +48,31 @@ module.exports = class Cart {
       const cart = JSON.parse(fileContent);
       const updatedCart = { ... cart };
       const product = updatedCart.products.find(prod => prod.id === id);
-      const productQty = product.qty;
 
+      if (!product) {
+        // don't try to execute the rest of the code if there is no product
+        return; 
+      }
+
+      const productQty = product.qty;
       updatedCart.products = updatedCart.products.filter(prod => prod.id !== id);
       updatedCart.totalPrice = updatedCart.totalPrice - productPrice * productQty;
 
       fs.writeFile(p, JSON.stringify(updatedCart), err => {
         console.log(err);
       });
+    });
+  }
+
+  static getCart(cb) {
+    fs.readFile(p, (err, fileContent) => {
+      const cart = JSON.parse(fileContent);
+      if (err) {
+        // error is there is no cart
+        cb(null);
+      } else {
+        cb(cart);
+      } 
     });
   }
 }
