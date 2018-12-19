@@ -5,6 +5,7 @@ const bodyParser = require('body-parser');
 
 const errorController = require('./controllers/error');
 const mongoConenct = require('./util/database').mongoConnect;
+const User = require('./models/user');
 
 const app = express();
 
@@ -18,12 +19,12 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use((req, res, next) => {
-  // User.findById(1)
-  //   .then(user => {
-  //     req.user = user;
-  //     next();
-  //   })
-  //   .catch(err => console.log(err));
+  User.findById("5c1ad19f4eb3933d24acc243") // converted to mongodb id in model
+    .then(user => {
+      req.user = user;
+      next();
+    })
+    .catch(err => console.log(err));
   next();
 });
 
