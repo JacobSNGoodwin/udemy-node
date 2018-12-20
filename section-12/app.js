@@ -19,9 +19,9 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use((req, res, next) => {
-  User.findById("5c1ad19f4eb3933d24acc243") // converted to mongodb id in model
+  User.findById("5c1aebf64eb3933d24acc244") // converted to mongodb id in model
     .then(user => {
-      req.user = new User(user.name, user.eamil, user.cart, user._id);
+      req.user = new User(user.name, user.email, user.cart, user._id);
       next();
     })
     .catch(err => console.log(err));

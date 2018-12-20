@@ -18,12 +18,28 @@ class User {
   }
 
   addToCart(product) {
-    // const cartProduct = this.cart.items.findIndex(cp => {
-    //   // check if product already exists in a cart
-    //   return cp._id === product._id;
-    // });
-    const updatedCart = {items: [{productId: new ObjectId(product._id), quantity:1}] };
+    const cartProductIndex = this.cart.items.findIndex(cp => {
+      // check if product already exists in a cart
+      return cp.productId.toString() === product._id.toString(); // make sure id's are strings
+    });
+
+    let newQuantity = 1; // if it's a new cart
+    const updatedCartItems = [...this.cart.items];
+
+    
+
+    if (cartProductIndex >= 0) {
+      // if we have already have the product in the cart
+      newQuantity = this.cart.items[cartProductIndex].quantity + 1;
+      updatedCartItems[cartProductIndex].quantity = newQuantity;
+    } else {
+      // if this is a new item
+      updatedCartItems.push({productId: new ObjectId(product._id), quantity: newQuantity});
+    }
+
+    const updatedCart = {items: updatedCartItems };
     const db = getDb();
+
     return db
       .collection('users')
       .updateOne(
