@@ -1,4 +1,5 @@
 const Product = require('../models/product');
+const Order = require('../models/order');
 
 exports.getProducts = (req, res, next) => {
   Product.find()
@@ -17,7 +18,7 @@ exports.getProducts = (req, res, next) => {
 
 exports.getProduct = (req, res, next) => {
   const prodId = req.params.productId;
-  
+
   Product.findById(prodId)
     .then(product => {
       res.render('shop/product-detail', {
@@ -82,13 +83,33 @@ exports.postCartDeleteProduct = (req, res, next) => {
 };
 
 exports.postOrder = (req, res, next) => {
-  let fetchedCart;
   req.user
-    .addOrder()
+    .populate('cart.items.productId') // mongoose method
+    .execPopulate()
+    .then(user => {
+      // console.log(user.cart.items);
+      const products = user.cart.items.map(i => {
+        // spread operator because MongoDb productId holds meta data and only
+        // stores id. _doc allows us to get just the doc
+        return { quantity: i.quantity, product: { ...i.productId._doc } };
+      });
+      // console.log(products);
+      const order = new Order({
+        user: {
+          name: req.user.name,
+          userId: req.user // mongoose will automatically get id
+        },
+        products: products
+      });
+
+      order.save();
+    })
     .then(result => {
       res.redirect('/orders');
     })
-    .catch(err => console.log(err));
+    .catch(err => {
+      console.log(err);
+    })
 };
 
 exports.getOrders = (req, res, next) => {
