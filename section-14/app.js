@@ -19,7 +19,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use((req, res, next) => {
-  User.findById('5bab316ce0a7c75f783cb8a8')
+  User.findById('5c1c6f8bb85e733d201d3da3')
     .then(user => {
       req.user = user;
       next();
@@ -34,14 +34,14 @@ app.use(errorController.get404);
 
 mongoose
   .connect(
-    'mongodb+srv://maximilian:9u4biljMQc4jjqbe@cluster0-ntrwp.mongodb.net/shop?retryWrites=true'
+    'mongodb+srv://jacobgoodwin:3Fj5YDLRMn6N2bm@cluster0-yrdwb.mongodb.net/shop?retryWrites=true'
   )
   .then(result => {
     User.findOne().then(user => {
       if (!user) {
         const user = new User({
-          name: 'Max',
-          email: 'max@test.com',
+          name: 'Jacob',
+          email: 'jacob@test.jacob',
           cart: {
             items: []
           }
