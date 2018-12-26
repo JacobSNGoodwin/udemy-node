@@ -19,7 +19,7 @@ const authRoutes = require('./routes/auth');
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
-app.user(session({
+app.use(session({
   secret: 'a secret',
   resave: false,
   saveUninitialized: false
