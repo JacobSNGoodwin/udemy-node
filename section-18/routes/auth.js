@@ -14,21 +14,27 @@ router.post('/login', authController.postLogin);
 router.post(
   '/signup',
   [
-  check('email')
-    .isEmail()
-    .withMessage('Please enter a valid email')
-    .custom((value, {req}) => {
-      if (value === 'test@test.com') {
-        throw new Error('This email address is verboten!');
+    check('email')
+      .isEmail()
+      .withMessage('Please enter a valid email')
+      .custom((value, {req}) => {
+        if (value === 'test@test.com') {
+          throw new Error('This email address is verboten!');
+        }
+        return true;
+      }),
+    body(
+      'password',
+      'Please enter an alphanumeric password with at least 5 characters.'
+    )
+      .isLength({min: 5})
+      .isAlphanumeric(), // for demonstration only,
+    body('confirmPassword').custom((value, { req }) => {
+      if(value !== req.body.password) {
+        throw new Error('Passwords must match');
       }
       return true;
-    }),
-  body(
-    'password',
-    'Please enter an alphanumeric password with at least 5 characters.'
-  )
-    .isLength({min: 5})
-    .isAlphanumeric() // for demonstration only
+    })
   ],
   authController.postSignup
   );
