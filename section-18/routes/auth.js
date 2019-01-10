@@ -10,14 +10,23 @@ router.get('/login', authController.getLogin);
 
 router.get('/signup', authController.getSignup);
 
-router.post('/login', authController.postLogin);
+router.post(
+  '/login',
+  [
+    body('email').isEmail().withMessage('Please enter a valid email address'),
+    body('password', 'Please enter an alphanumeric password with at least 5 characters.')
+      .isLength({min: 5})
+      .isAlphanumeric()
+  ],
+  authController.postLogin
+  );
 
 router.post(
   '/signup',
   [
     check('email')
       .isEmail()
-      .withMessage('Please enter a valid email')
+      .withMessage('Please enter a valid email address')
       .custom((value, {req}) => {
         // async validator returns promise
         return User.findOne({ email: value })
