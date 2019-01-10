@@ -1,5 +1,5 @@
 const express = require('express');
-const { check } = require('express-validator/check');
+const { check, body } = require('express-validator/check');
 
 const authController = require('../controllers/auth');
 
@@ -13,6 +13,7 @@ router.post('/login', authController.postLogin);
 
 router.post(
   '/signup',
+  [
   check('email')
     .isEmail()
     .withMessage('Please enter a valid email')
@@ -22,6 +23,13 @@ router.post(
       }
       return true;
     }),
+  body(
+    'password',
+    'Please enter an alphanumeric password with at least 5 characters.'
+  )
+    .isLength({min: 5})
+    .isAlphanumeric() // for demonstration only
+  ],
   authController.postSignup
   );
 
