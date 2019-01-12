@@ -56,7 +56,6 @@ exports.postAddProduct = (req, res, next) => {
       res.redirect('/admin/products');
     })
     .catch(err => {
-      res.redirect('/500');
       // return res.status(500).render('admin/edit-product', {
       //   pageTitle: 'Add Product',
       //   path: '/admin/add-product',
@@ -71,6 +70,9 @@ exports.postAddProduct = (req, res, next) => {
       //   errorMessage: 'Databse operation failed. Please try again.',
       //   validationErrors: []
       // });
+      const error =  new Error(err);
+      error.httpStatusCode = 500;
+      return next(error);
     });
 };
 
@@ -95,7 +97,11 @@ exports.getEditProduct = (req, res, next) => {
         validationErrors: []
       });
     })
-    .catch(err => console.log(err));
+    .catch(err => {
+      const error =  new Error(err);
+      error.httpStatusCode = 500;
+      return next(error);
+    });
 };
 
 exports.postEditProduct = (req, res, next) => {
