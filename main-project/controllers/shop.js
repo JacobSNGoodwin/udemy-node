@@ -161,7 +161,19 @@ exports.getInvoice = (req, res, next) => {
 
       const invoiceName = 'invoice-' + orderId + '.pdf';
       const invoicePath = path.join('data', 'invoices', invoiceName);
+
+      const pdfDoc = new PDFDocument();
       
+      res.setHeader('Content-Type', 'application/pdf');
+      res.setHeader('Content-Disposition', 'inline; filename="' + invoiceName + '"');
+
+      // make sure to store pdf on the server
+      pdfDoc.pipe(fs.createWriteStream(invoicePath));
+      pdfDoc.pipe(res);
+
+      pdfDoc.text('Hello World');
+      
+      pdfDoc.end();
       // Reading file stores in memory, so you can run out of memory - better to stream
       // fs.readFile(invoicePath, (err, data) => {
       //   if (err) {
@@ -171,15 +183,7 @@ exports.getInvoice = (req, res, next) => {
       //   res.setHeader('Content-Type', 'application/pdf');
       //   res.setHeader('Content-Disposition', 'inline; filename="' + invoiceName + '"');
       //   res.send(data);
-      // });
-
-      const file = fs.createReadStream(invoicePath);
-
-      res.setHeader('Content-Type', 'application/pdf');
-      res.setHeader('Content-Disposition', 'inline; filename="' + invoiceName + '"');
-      
-      file.pipe(res); // pipe readable stream into writeable stream
-
+      // });      
     })
     .catch(err => {
       next(err);
