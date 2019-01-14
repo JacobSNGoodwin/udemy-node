@@ -1,10 +1,13 @@
+const fs = require('fs');
+const path = require('path');
+
 const Product = require('../models/product');
 const Order = require('../models/order');
 
 exports.getProducts = (req, res, next) => {
   Product.find()
     .then(products => {
-      console.log(products);
+      // console.log(products);
       res.render('shop/product-list', {
         prods: products,
         pageTitle: 'All Products',
@@ -141,3 +144,18 @@ exports.getOrders = (req, res, next) => {
       return next(error);
     });
 };
+
+exports.getInvoice = (req, res, next) => {
+  const orderId = req.params.orderId; // get  from route
+  const invoiceName = 'invoice-' + orderId + '.pdf';
+  const invoicePath = path.join('data', 'invoices', invoiceName);
+  
+  fs.readFile(invoicePath, (err, data) => {
+    console.log(data);
+    if (err) {
+      return next(); // use default error handling in app.js
+    }
+
+    res.send(data);
+  });
+}
