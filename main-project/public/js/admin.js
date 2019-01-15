@@ -2,6 +2,7 @@ const deleteProduct = (btn) => {
   const prodId = btn.parentNode.querySelector('[name=productId]').value;
   const csrf= btn.parentNode.querySelector('[name=_csrf]').value;
 
+  const productElement = btn.closest('article');
   // will send to current host without absolute URL
   fetch('/admin/product/' + prodId, {
     method: 'DELETE',
@@ -10,7 +11,12 @@ const deleteProduct = (btn) => {
     }
   })
   .then(result => {
-    console.log(result);
+    return result.json();
+  })
+  .then(data => {
+    console.log(data);
+    productElement.remove(); // doesn't work in IE
+    // productElement.parentNode.removeChild(productElement); // - IE Solution
   })
   .catch(err => {
     console.log(err);
