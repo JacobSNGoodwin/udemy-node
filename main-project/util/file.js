@@ -1,7 +1,11 @@
 const fs = require('fs');
+const path = require('path');
 
 const deleteFile = (filePath) => {
-  fs.unlink(filePath, (err) => {
+  console.log(filePath);
+  const nodeFilePath = path.normalize(filePath);  // in case of windows issue
+  
+  fs.unlink(nodeFilePath, (err) => {
     if (err) {
       throw (err);
     }
