@@ -2,3 +2,4 @@
 node_modules
 
 /section-*
+main-project/nodemon.json
