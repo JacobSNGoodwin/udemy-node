@@ -3,3 +3,6 @@ node_modules
 
 /section-*
 main-project/nodemon.json
+main-project/server.cert
+main-project/server.key
+main-project/access.log
